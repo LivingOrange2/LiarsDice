@@ -2,12 +2,16 @@ import java.util.ArrayList;
 
 public abstract class Player
 {
-	private ArrayList<Die> dice;
+	protected ArrayList<Die> dice;
 	
-	private int[] values;
+	protected int[] values;
+	
+	private Call currentCall;
+	
 	public Player()
 	{
 		values = new int[6];
+		dice = new ArrayList<Die>(5);
 		reset();
 	}
 	
@@ -47,5 +51,32 @@ public abstract class Player
 	public int[] getValues()
 	{
 		return values;
+	}
+	
+	public ArrayList<Die> getDice()
+	{
+		return dice;
+	}
+	
+	public boolean hasDice()
+	{
+		if(dice.size() == 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	public void makeCall(Call c)
+	{
+		currentCall = new Call(c.getCalledDie(), c.getAmountCalled());
+	}
+	
+	public Call getCurrentCall()
+	{
+		return currentCall;
 	}
 }
