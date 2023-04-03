@@ -1,8 +1,8 @@
 import java.io.Serializable;
 
+@SuppressWarnings("serial")
 public class LiarsDiceSave implements Serializable
 {
-
 	private String name;
 	
 	private int wins;

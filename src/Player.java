@@ -27,6 +27,8 @@ public abstract class Player
 	
 	public void rollDice()
 	{
+		values = new int[6];
+		
 		for(Die die: dice)
 		{
 			die.roll();
@@ -40,6 +42,7 @@ public abstract class Player
 			 * etc
 			 */
 			values[die.getValue()-1]++;
+			System.out.println(die.getValue());
 		}
 	}
 	

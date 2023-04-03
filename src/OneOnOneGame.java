@@ -1,12 +1,12 @@
-import java.util.ArrayList;
 
-public class OneOnOneGame 
+public class OneOnOneGame extends Game
 {
-	private User user;
 	private Player opponent;
+	private Call latestCall;
 	
 	public OneOnOneGame(User user)
 	{
+		super(user);
 		newGame(user);
 	}
 	
@@ -15,6 +15,11 @@ public class OneOnOneGame
 		this.user = user;
 		
 		opponent = new AggresivePlayer();
+		
+		players.add(user);
+		players.add(opponent);
+		
+		latestCall = new Call(0, 0);
 	}
 	
 	public int getAmountOfDice()
@@ -22,7 +27,7 @@ public class OneOnOneGame
 		return user.getDice().size() + opponent.getDice().size();
 	}
 	
-	public void callOpponent()
+	public String callOpponent()
 	{
 		int diceBeingCalled = opponent.getCurrentCall().getCalledDie();
 		
@@ -31,51 +36,71 @@ public class OneOnOneGame
 		if(amountOfDice >= opponent.getCurrentCall().getAmountCalled())	
 		{
 			user.removeDie();
+			state = gameState.PLAYER_TURN;
+			return "";
 		}
 		else
 		{
 			opponent.removeDie();
+			state = gameState.OPPONENT_TURN;
+			return "";
 		}
 	}
 	
-	public void callUser()
+	public String callUser()
 	{
-		int diceBeingCalled = user.getCurrentCall().getCalledDie();
-		
-		int amountOfDice = user.getValues()[diceBeingCalled-1] + opponent.getValues()[diceBeingCalled-1];
+		int amountOfDice = getAmountOfSide(user.getCurrentCall().getCalledDie());
 		
 		if(amountOfDice >= user.getCurrentCall().getAmountCalled())	
 		{
 			opponent.removeDie();
+			state = gameState.OPPONENT_TURN;
+			return "The opponent called you!\n You called " + getCallText(user.getCurrentCall())
+			+ "\nand there was actually " + getAmountOfSide(user.getCurrentCall().getCalledDie())
+			 + " " + user.getCurrentCall().getCalledDie() + "'s\nOpponent loses a die!";
 		}
 		else
 		{
 			user.removeDie();
+			state = gameState.PLAYER_TURN;
+			return "The opponent called you!\n You called " + getCallText(user.getCurrentCall())
+			+ "\nand there was actually " + getAmountOfSide(user.getCurrentCall().getCalledDie())
+			 + " " + user.getCurrentCall().getCalledDie() + "'s\n" + user.getName() 
+			 + " lose's a die!";
 		}
 	}
 	
-	public void opponentTurn()
+	public Response getOpponentResponse()
 	{
 		if(((BotPlayer)opponent).willCallUser(getAmountOfDice(), user.getCurrentCall()))
 		{
-			callUser();
+			//return new Response(true);
+			return new Response(true, callUser());
 		}
 		else
 		{
 			opponent.makeCall(((BotPlayer)opponent).getCall(getAmountOfDice(), user.getCurrentCall()));
+			
+			latestCall = opponent.getCurrentCall();
+			
+			return new Response(false, "Current Call: " + getCallText(latestCall));
 		}
 	}
 	
-	public void playerTurn(boolean callOpponent)
+	public void setLatestCall(Call call)
 	{
-		if(callOpponent)
-		{
-			callOpponent();
-		}
-		else
-		{
-			opponentTurn();
-		}
+		latestCall = new Call(call.getCalledDie(), call.getAmountCalled());
+	}
+	
+	public Call getLatestCall()
+	{
+		return latestCall;
+	}
+	
+	public String getCallText(Call call)
+	{
+		return call.getAmountCalled() + " " +
+				call.getCalledDie() + "'s";
 	}
 	
 }

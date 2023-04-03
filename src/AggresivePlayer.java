@@ -12,7 +12,7 @@ public class AggresivePlayer extends Player implements BotPlayer
 		
 		if(percentageOfDiceBeingCalled > 55 )
 		{
-			return false;
+			return true;
 		}
 		else if(percentageOfDiceBeingCalled > 40)
 		{
@@ -24,7 +24,7 @@ public class AggresivePlayer extends Player implements BotPlayer
 		}
 		else
 		{
-			return true;
+			return false;
 		}
 		
 	}
