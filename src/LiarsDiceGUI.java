@@ -1,4 +1,3 @@
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -202,8 +201,8 @@ public class LiarsDiceGUI extends Application
 		
 		menuBar.getMenus().addAll(fileMenu, editMenu);
 		
-		fileMenu.getItems().add(exitItem);
-		editMenu.getItems().addAll(statsItem, nameItem);
+		fileMenu.getItems().addAll(statsItem, exitItem);
+		editMenu.getItems().addAll(nameItem);
 		
 		GridPane mainContainer = new GridPane();
 		GridPane ps = new GridPane();
@@ -253,6 +252,8 @@ public class LiarsDiceGUI extends Application
 			buttons.getChildren().clear();
 			buttons.getChildren().addAll(btnBet, btnCall);
 			
+			btnCall.setDisable(true);
+			
 			startGame();
 		} 
 		catch (Exception e) 
@@ -268,6 +269,7 @@ public class LiarsDiceGUI extends Application
 				
 				if(isValidCall(calledSide, amtCalled))
 				{
+					btnCall.setDisable(false);
 					playerTurn(new Call(calledSide, amtCalled));
 				}
 				else
@@ -331,6 +333,8 @@ public class LiarsDiceGUI extends Application
 		});
 		
 		nameItem.setOnAction(event -> {new NameBox(player);});
+		
+		statsItem.setOnAction(event -> {new StatsBox(data);});
 	}
 	
 	

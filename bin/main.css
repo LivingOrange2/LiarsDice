@@ -30,3 +30,8 @@
 {
 	-fx-text-fill: black;
 }
+
+#stats-vbox .label
+{
+	-fx-font-size: 20px;
+}

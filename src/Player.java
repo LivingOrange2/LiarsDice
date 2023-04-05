@@ -41,8 +41,15 @@ public abstract class Player
 			 * values[2] = amount of 3's rolled
 			 * etc
 			 */
-			values[die.getValue()-1]++;
 			System.out.println(die.getValue());
+			values[die.getValue()-1]++;
+			if(die.getValue() == 1)
+			{
+				for(int x = 0; x < values.length; x++)
+				{
+					values[x] ++;
+				}
+			}
 		}
 	}
 	

@@ -27,6 +27,7 @@ public class NameBox extends Stage
 		});
 		
 		Scene scene = new Scene(main, 200, 100);
+		scene.getStylesheets().add("main.css");
 		setScene(scene);
 		setTitle("Change Name!");
 		show();
