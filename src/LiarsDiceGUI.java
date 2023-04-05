@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -27,8 +28,8 @@ public class LiarsDiceGUI extends Application
 	private Label msg;
 	
 	private MenuBar menuBar;
-	private Menu fileMenu;
-	private MenuItem exitItem;
+	private Menu fileMenu, editMenu;
+	private MenuItem exitItem, statsItem, nameItem;
 	
 	
 	private OneOnOneGame game;
@@ -50,6 +51,9 @@ public class LiarsDiceGUI extends Application
 	@Override
 	public void start(Stage primary) throws Exception 
 	{
+		data = SaveLoader.getSave();
+		player = new User(data.getName());
+		
 		primary.setScene(buildGUI(primary));
 		
 		primary.setTitle("Liar's Dice");
@@ -57,12 +61,10 @@ public class LiarsDiceGUI extends Application
 		primary.show();
 	}
 	
-	public void startGame() throws Exception
+	public void startGame()
 	{
-		player = new User();
 		game = new OneOnOneGame(player);
-		
-		data = SaveLoader.getSave();
+		player.reset();
 		
 		msg.setText("Current Bet: none?");
 		
@@ -90,11 +92,7 @@ public class LiarsDiceGUI extends Application
 		{
 			return false;
 		}
-		else if(amt > game.getLatestCall().getAmountCalled() && side >= game.getLatestCall().getCalledDie())
-		{
-			return true;
-		}
-		else if(side > game.getLatestCall().getCalledDie() && amt >= game.getLatestCall().getAmountCalled())
+		else if(amt > game.getLatestCall().getAmountCalled() || side > game.getLatestCall().getCalledDie())
 		{
 			return true;
 		}
@@ -191,6 +189,22 @@ public class LiarsDiceGUI extends Application
 			rollBox.getChildren().add(new Label("0"));
 		}
 		
+		menuBar = new MenuBar();
+		
+		menuBar.setId("menu-bar");
+		
+		fileMenu = new Menu("File");
+		editMenu = new Menu("Edit");
+		
+		exitItem = new MenuItem("Exit");
+		statsItem = new MenuItem("View Stats");
+		nameItem = new MenuItem("Change Name");
+		
+		menuBar.getMenus().addAll(fileMenu, editMenu);
+		
+		fileMenu.getItems().add(exitItem);
+		editMenu.getItems().addAll(statsItem, nameItem);
+		
 		GridPane mainContainer = new GridPane();
 		GridPane ps = new GridPane();
 		BorderPane visual = new BorderPane();
@@ -209,9 +223,13 @@ public class LiarsDiceGUI extends Application
 		mainContainer.add(visual, 1, 0);
 		mainContainer.add(ps, 1, 1);
 		
+		BorderPane main = new BorderPane();
+		main.setCenter(mainContainer);
+		main.setTop(menuBar);
+		
 		setActions(primary);
 		
-		Scene scene = new Scene(mainContainer, 500, 350);
+		Scene scene = new Scene(main, 500, 375);
 		
 		scene.getStylesheets().add("main.css");
 		
@@ -221,22 +239,13 @@ public class LiarsDiceGUI extends Application
 	public void setActions(Stage primary)
 	{
 		btnExit.setOnAction(event -> {
-			try 
-			{
-				SaveLoader.save(data);
-				
-			} 
-			catch (IOException e) 
-			{
-				System.out.println(e.getMessage());
-			}
-			finally
-			{
-				primary.close();
-			}
-			
+				exit(primary);
 			}
 		);
+		
+		exitItem.setOnAction(event -> {
+			exit(primary);
+		});
 		
 		btnPlay.setOnAction(event -> {
 		try 
@@ -280,9 +289,48 @@ public class LiarsDiceGUI extends Application
 			buttons.getChildren().clear();
 			buttons.getChildren().addAll(btnBet, btnCall);
 			
-			continueGame();
+			if(!game.isGameOver())
+			{
+				continueGame();
+			}
+			else
+			{
+				buttons.getChildren().clear();
+				buttons.getChildren().addAll(btnPlay, btnExit);
+				
+				if(game.didPlayerWin())
+				{
+					data.addWin();
+					msg.setText("The opponent has ran out of dice!\n" + player.getName()
+					+ " is the winner!");
+				}
+				else
+				{
+					data.addLoss();
+					msg.setText(player.getName() + " has ran out of dice!\nThe opponent is the winner");
+				}
+				
+				try 
+				{
+					SaveLoader.save(data);
+				} 
+				catch(Exception e) 
+				{
+					System.out.println(e.getMessage());
+				}
+			}
+			
 			
 		});
+		
+		btnCall.setOnAction(event -> {
+			msg.setText(game.callOpponent());
+			
+			buttons.getChildren().clear();
+			buttons.getChildren().add(btnOk);
+		});
+		
+		nameItem.setOnAction(event -> {new NameBox(player);});
 	}
 	
 	
@@ -291,4 +339,23 @@ public class LiarsDiceGUI extends Application
 		return call.getAmountCalled() + " " +
 				call.getCalledDie() + "'s";
 	}
+	
+	public void exit(Stage primary)
+	{
+		try 
+		{
+			data.setName(player.getName());
+			SaveLoader.save(data);
+			
+		} 
+		catch (IOException e) 
+		{
+			System.out.println(e.getMessage());
+		}
+		finally
+		{
+			primary.close();
+		}
+	}
 }
+

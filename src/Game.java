@@ -41,6 +41,19 @@ public class Game
 		return amt;
 	}
 	
+	public boolean isGameOver()
+	{
+		for(Player player: players)
+		{
+			if(!player.hasDice())
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	public void roll()
 	{
 		for(Player player: players)

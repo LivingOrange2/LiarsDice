@@ -37,13 +37,20 @@ public class OneOnOneGame extends Game
 		{
 			user.removeDie();
 			state = gameState.PLAYER_TURN;
-			return "";
+			return "You called the opponent!\nOpponent called " + 
+			getCallText(opponent.getCurrentCall()) + "\nand there was actually "
+			+ getAmountOfSide(opponent.getCurrentCall().getCalledDie()) + " "
+			+ opponent.getCurrentCall().getCalledDie() + "'s\n" + user.getName()
+			+ " loses a die!";
 		}
 		else
 		{
 			opponent.removeDie();
 			state = gameState.OPPONENT_TURN;
-			return "";
+			return "You called the opponent!\nOpponent called " + 
+					getCallText(opponent.getCurrentCall()) + "\nand there was actually "
+					+ getAmountOfSide(opponent.getCurrentCall().getCalledDie()) + " "
+					+ opponent.getCurrentCall().getCalledDie() + "'s\nOpponent loses a die!";
 		}
 	}
 	
@@ -84,6 +91,18 @@ public class OneOnOneGame extends Game
 			latestCall = opponent.getCurrentCall();
 			
 			return new Response(false, "Current Call: " + getCallText(latestCall));
+		}
+	}
+	
+	public boolean didPlayerWin()
+	{
+		if(user.getDice().size() != 0)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 	

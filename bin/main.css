@@ -25,3 +25,8 @@
 {
 	-fx-border-color: white;
 }
+
+.menu .label
+{
+	-fx-text-fill: black;
+}

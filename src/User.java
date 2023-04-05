@@ -19,4 +19,9 @@ public class User extends Player
 		return name;
 	}
 	
+	public void setName(String s)
+	{
+		name = s;
+	}
+	
 }

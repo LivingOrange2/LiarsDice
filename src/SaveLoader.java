@@ -7,10 +7,9 @@ import java.io.ObjectOutputStream;
 
 public class SaveLoader 
 {
-	private static ObjectInputStream file;
-	
 	public static LiarsDiceSave getSave() throws IOException, ClassNotFoundException
 	{
+		ObjectInputStream file = null;
 		try
 		{
 			file = new ObjectInputStream(new FileInputStream("data.ld"));
@@ -23,7 +22,10 @@ public class SaveLoader
 		}
 		finally
 		{
-			file.close();
+			if(file != null)
+			{
+				file.close();
+			}
 		}
 		
 	}

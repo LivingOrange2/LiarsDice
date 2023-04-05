@@ -41,29 +41,32 @@ public class AggresivePlayer extends Player implements BotPlayer
 			}
 			else
 			{
-				return new Call(getHighestRolledSide(), call.getAmountCalled() + (rand.nextInt(3) + 1));
+				return new Call(getHighestRolledSide(), call.getAmountCalled() + (rand.nextInt(2) + 1));
 			}
 		}
 		else
 		{
-			int sideToCall = 0;
-			
-			while(sideToCall != call.getCalledDie() || sideToCall < call.getCalledDie())
+			if(call.getCalledDie() == 0)
 			{
-				sideToCall = rand.nextInt(6)+1;
+				return new Call(rand.nextInt(6)+1, rand.nextInt(2)+1);
 			}
 			
-			if(sideToCall == call.getCalledDie())
+			boolean increaseSide = rand.nextBoolean();
+			
+			if(!increaseSide || call.getCalledDie() == 6)
 			{
-				return new Call(sideToCall, call.getAmountCalled() + (rand.nextInt(3)+1));
-			}
-			else if(sideToCall > call.getCalledDie())
-			{
-				return new Call(sideToCall, call.getAmountCalled() + (rand.nextInt(3)));
+				return new Call(call.getCalledDie(), call.getAmountCalled()+1);
 			}
 			else
 			{
-				return new Call(sideToCall, call.getAmountCalled() + (rand.nextInt(3)+1));
+				int side = 0;
+				
+				while(side < call.getCalledDie())
+				{
+					side = rand.nextInt(6) + 1;				
+				}
+				
+				return new Call(side, call.getAmountCalled());
 			}
 		}
 	}

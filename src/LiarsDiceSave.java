@@ -47,5 +47,13 @@ public class LiarsDiceSave implements Serializable
 		this.losses = losses;
 	}
 	
+	public void addWin()
+	{
+		wins++;
+	}
 	
+	public void addLoss()
+	{
+		losses++;
+	}
 }
