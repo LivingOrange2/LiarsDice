@@ -61,7 +61,7 @@ public class AggresivePlayer extends Player implements BotPlayer
 			{
 				int side = 0;
 				
-				while(side < call.getCalledDie())
+				while(side <= call.getCalledDie())
 				{
 					side = rand.nextInt(6) + 1;				
 				}

@@ -27,8 +27,8 @@ public class LiarsDiceGUI extends Application
 	private Label msg;
 	
 	private MenuBar menuBar;
-	private Menu fileMenu, editMenu;
-	private MenuItem exitItem, statsItem, nameItem;
+	private Menu fileMenu, editMenu, helpMenu;
+	private MenuItem exitItem, statsItem, nameItem, infoItem;
 	
 	
 	private OneOnOneGame game;
@@ -194,15 +194,18 @@ public class LiarsDiceGUI extends Application
 		
 		fileMenu = new Menu("File");
 		editMenu = new Menu("Edit");
+		helpMenu = new Menu("Help");
 		
 		exitItem = new MenuItem("Exit");
 		statsItem = new MenuItem("View Stats");
 		nameItem = new MenuItem("Change Name");
+		infoItem = new MenuItem("Info");
 		
-		menuBar.getMenus().addAll(fileMenu, editMenu);
+		menuBar.getMenus().addAll(fileMenu, editMenu, helpMenu);
 		
 		fileMenu.getItems().addAll(statsItem, exitItem);
 		editMenu.getItems().addAll(nameItem);
+		helpMenu.getItems().addAll(infoItem);
 		
 		GridPane mainContainer = new GridPane();
 		GridPane ps = new GridPane();
@@ -335,6 +338,8 @@ public class LiarsDiceGUI extends Application
 		nameItem.setOnAction(event -> {new NameBox(player);});
 		
 		statsItem.setOnAction(event -> {new StatsBox(data);});
+		
+		infoItem.setOnAction(event -> {new InfoBox();});
 	}
 	
 	
